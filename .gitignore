@@ -1,0 +1,101 @@
+########################################
+# Visual Studio
+########################################
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+########################################
+# Build outputs
+########################################
+
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+########################################
+# NuGet
+########################################
+
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+########################################
+# Rider / JetBrains (ha valaha használod)
+########################################
+
+.idea/
+*.sln.iml
+
+########################################
+# OS / Windows
+########################################
+
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+########################################
+# IIS / Local config
+########################################
+
+*.dbmdl
+*.jfm
+*.publishsettings
+
+########################################
+# SQL Server
+########################################
+
+*.mdf
+*.ldf
+
+########################################
+# DNN specifikus
+########################################
+
+# installált modulok (runtime)
+DesktopModules/MVC/**/bin/
+DesktopModules/MVC/**/obj/
+
+# DNN cache / temp
+Portals/_default/Cache/
+Portals/_default/Logs/
+Portals/_default/temp/
+
+########################################
+# Module packaging output
+########################################
+
+Install/
+install/
+*.zip
+
+########################################
+# Web.config override (ha local módosítod)
+########################################
+
+Web.Debug.config
+Web.Release.config
+
+########################################
+# Node / frontend (ha később lesz)
+########################################
+
+node_modules/
+dist/
+build/
+
+########################################
+# Python / egyéb (ha mixed repo)
+########################################
+
+__pycache__/
+*.pyc
+.env
