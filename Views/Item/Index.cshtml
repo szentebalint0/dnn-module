@@ -1,82 +1,23 @@
 ﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<dynamic>
 
-<link rel="stylesheet" href="@Url.Content("~/DesktopModules/MVC/Dnn.ClosedAI.HelloWorld/module.css")" />
-
-<div id="chat-@Dnn.ModuleContext.ModuleId" class="chat-root">
-
-    <div class="card">
-        <h1>Ask a Question</h1>
-
-        <div class="stack">
-            <div class="row">
-                <input class="question" type="text" placeholder="Type your question..." />
-                <button class="send" type="button">Send</button>
-            </div>
-        </div>
-
-        <div class="answer">Your answer will appear here.</div>
-    </div>
-
-</div>
-
 <script>
-(function () {
-    const root = document.getElementById("chat-@Dnn.ModuleContext.ModuleId");
-
-    const questionInput = root.querySelector(".question");
-    const sendButton = root.querySelector(".send");
-    const answerBox = root.querySelector(".answer");
-
-    const HISTORY_WINDOW = 4;
-    const chatHistory = [];
-
-    async function askQuestion() {
-        const question = questionInput.value.trim();
-        if (!question) return;
-
-        sendButton.disabled = true;
-        answerBox.classList.add("loading");
-        answerBox.textContent = "Loading...";
-
-        try {
-            const response = await fetch("http://40.67.243.80/closedai-api/question", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    question,
-                    history: chatHistory.slice(-HISTORY_WINDOW),
-                    history_window: HISTORY_WINDOW
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            const data = await response.json();
-            const answer = data.answer || "(empty response)";
-
-            answerBox.textContent = answer;
-
-            chatHistory.push({ role: "user", content: question });
-            chatHistory.push({ role: "assistant", content: answer });
-
-        } catch (err) {
-            answerBox.textContent = "Error: " + err.message;
-        } finally {
-            sendButton.disabled = false;
-            answerBox.classList.remove("loading");
-        }
-    }
-
-    sendButton.addEventListener("click", askQuestion);
-
-    questionInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            askQuestion();
-        }
-    });
-
-
-})();
+    window.closedAiConfig = {
+        enabled: true,
+        endpoint: "/closedai-api/question",
+        historyWindow: 6,
+        title: "A te asszisztensed",
+        inputPlaceholder: "Írd be a kérdésed...",
+        welcomeMessage: "Szia! Miben segíthetek?",
+        starterQuestions: [
+            "Mik a legkelendőbb termékek?",
+            "Ajánlj nekem egy modellt!"
+        ]
+    };
 </script>
+
+@if (Dnn.ModuleContext.IsEditable)
+{
+    <div class="closedai-config-info">
+        ClosedAI chatbot config aktív ezen az oldalon.
+    </div>
+}
