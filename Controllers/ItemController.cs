@@ -19,12 +19,15 @@ using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers;
 
 namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
 {
     [DnnHandleError]
     public class ItemController : DnnController
     {
+
+        private readonly ChatbotConfigRepository _configRepository = new ChatbotConfigRepository();
 
         public ActionResult Delete(int itemId)
         {
@@ -80,8 +83,52 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         [ModuleAction(ControlKey = "Edit", TitleKey = "AddItem")]
         public ActionResult Index()
         {
-            var items = ItemManager.Instance.GetItems(ModuleContext.ModuleId);
-            return View(items);
+            var moduleId = ModuleContext.ModuleId;
+            var userId = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo().UserID;
+
+            var config = _configRepository.GetOrCreateDefault(moduleId, userId);
+
+            var vm = new ChatbotConfigViewModel
+            {
+                ModuleId = config.ModuleId,
+                Enabled = config.Enabled,
+                Endpoint = config.Endpoint,
+                HistoryWindow = config.HistoryWindow,
+                Title = config.Title,
+                InputPlaceholder = config.InputPlaceholder,
+                WelcomeMessage = config.WelcomeMessage,
+                StarterQuestions = config.StarterQuestions,
+                IsEditable = ModuleContext.IsEditable
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [System.Web.Mvc.ValidateAntiForgeryToken]
+        public ActionResult Save(ChatbotConfigViewModel vm)
+        {
+            if (!ModuleContext.IsEditable)
+            {
+                return new HttpUnauthorizedResult();
+            }
+
+            var userId = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo().UserID;
+            var existing = _configRepository.GetOrCreateDefault(ModuleContext.ModuleId, userId);
+
+            existing.Enabled = vm.Enabled;
+            existing.Endpoint = vm.Endpoint;
+            existing.HistoryWindow = vm.HistoryWindow;
+            existing.Title = vm.Title;
+            existing.InputPlaceholder = vm.InputPlaceholder;
+            existing.WelcomeMessage = vm.WelcomeMessage;
+            existing.StarterQuestions = vm.StarterQuestions;
+            existing.LastModifiedOnDate = DateTime.UtcNow;
+            existing.LastModifiedByUserId = userId;
+
+            _configRepository.Save(existing);
+
+            return RedirectToAction("Index");
         }
     }
 }
