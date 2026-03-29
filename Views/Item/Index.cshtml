@@ -1,33 +1,82 @@
-﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<IEnumerable< HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models.Item >>
+﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<dynamic>
 
-@using System.Text.RegularExpressions
-@using DotNetNuke.Web.Mvc.Helpers
+<link rel="stylesheet" href="@Url.Content("~/DesktopModules/MVC/Dnn.ClosedAI.HelloWorld/module.css")" />
 
+<div id="chat-@Dnn.ModuleContext.ModuleId" class="chat-root">
 
-<div id="Items-@Dnn.ModuleContext.ModuleId">
-    @if (Model == null || !Model.Any())
-    {
-        <p>@Dnn.LocalizeString("NoItems")</p>
-    }
-    else
-    {
-        <ul class="tm_tl">
-            @foreach (var item in Model)
-            {
-                <li class="tm_t">
-                    <h3>@item.ItemName</h3>
-                    <div class="tm_td">@item.ItemDescription</div>
-                    @{
-                        if (Dnn.ModuleContext.IsEditable)
-                        {
-                            <div>
-                                <a href="@Url.Action("Edit", "Item", new {ctl = "Edit", itemId = item.ItemId})">@Dnn.LocalizeString("EditItem")</a>
-                                <a href="@Url.Action("Delete", "Item", new {itemId = item.ItemId})">@Dnn.LocalizeString("DeleteItem")</a>
-                            </div>
-                        }
-                    }
-                </li>
-            }
-        </ul>
-    }
+    <div class="card">
+        <h1>Ask a Question</h1>
+
+        <div class="stack">
+            <div class="row">
+                <input class="question" type="text" placeholder="Type your question..." />
+                <button class="send" type="button">Send</button>
+            </div>
+        </div>
+
+        <div class="answer">Your answer will appear here.</div>
+    </div>
+
 </div>
+
+<script>
+(function () {
+    const root = document.getElementById("chat-@Dnn.ModuleContext.ModuleId");
+
+    const questionInput = root.querySelector(".question");
+    const sendButton = root.querySelector(".send");
+    const answerBox = root.querySelector(".answer");
+
+    const HISTORY_WINDOW = 4;
+    const chatHistory = [];
+
+    async function askQuestion() {
+        const question = questionInput.value.trim();
+        if (!question) return;
+
+        sendButton.disabled = true;
+        answerBox.classList.add("loading");
+        answerBox.textContent = "Loading...";
+
+        try {
+            const response = await fetch("http://40.67.243.80/closedai-api/question", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    question,
+                    history: chatHistory.slice(-HISTORY_WINDOW),
+                    history_window: HISTORY_WINDOW
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const data = await response.json();
+            const answer = data.answer || "(empty response)";
+
+            answerBox.textContent = answer;
+
+            chatHistory.push({ role: "user", content: question });
+            chatHistory.push({ role: "assistant", content: answer });
+
+        } catch (err) {
+            answerBox.textContent = "Error: " + err.message;
+        } finally {
+            sendButton.disabled = false;
+            answerBox.classList.remove("loading");
+        }
+    }
+
+    sendButton.addEventListener("click", askQuestion);
+
+    questionInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            askQuestion();
+        }
+    });
+
+
+})();
+</script>

@@ -1,0 +1,84 @@
+.chat-root {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+}
+
+    /* Card */
+    .chat-root .card {
+        width: min(760px, 100%);
+        background: #ffffff;
+        border: 1px solid #d5deef;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(23, 32, 51, 0.12);
+        padding: 28px;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+        /* Title */
+        .chat-root .card h1 {
+            margin: 0 0 14px;
+            font-size: 1.35rem;
+        }
+
+    /* Layout */
+    .chat-root .row {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* Input */
+    .chat-root .question {
+        flex: 1;
+        font-size: 1rem;
+        padding: 14px 16px;
+        border: 1px solid #d5deef;
+        border-radius: 12px;
+        outline: none;
+    }
+
+        .chat-root .question:focus {
+            border-color: #0f62fe;
+            box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.15);
+        }
+
+    /* Button */
+    .chat-root .send {
+        border: 0;
+        border-radius: 12px;
+        padding: 0 18px;
+        font-size: 0.96rem;
+        font-weight: 600;
+        color: #fff;
+        background: #0f62fe;
+        cursor: pointer;
+        transition: background 120ms ease;
+    }
+
+        .chat-root .send:hover {
+            background: #0b53d7;
+        }
+
+        .chat-root .send:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+    /* Answer box */
+    .chat-root .answer {
+        margin-top: 14px;
+        min-height: 64px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px dashed #d5deef;
+        color: #5c6b86;
+        background: #fbfcff;
+        white-space: pre-wrap;
+        line-height: 1.45;
+    }    
+    /* Loading state */
+        
+    .chat-root .answer.loading {
+    color: #0f62fe;
+    font-style: italic;
+    }
