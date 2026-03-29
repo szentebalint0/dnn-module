@@ -1,5 +1,5 @@
 using System;
-using System.Data;
+using System.Linq;
 using DotNetNuke.Data;
 using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models;
 
@@ -7,14 +7,13 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers
 {
     public class ChatbotConfigRepository
     {
-        private const string TableName = "Dnn_ClosedAI_HelloWorld_Config";
-
         public ChatbotConfig GetByModuleId(int moduleId)
         {
-            using (IDataContext ctx = DataContext.Instance())
+            using (var ctx = DataContext.Instance())
             {
-                var rep = ctx.GetRepository<ChatbotConfig>();
-                return rep.GetById(moduleId);
+                return ctx.GetRepository<ChatbotConfig>()
+                          .Get()
+                          .FirstOrDefault(x => x.ModuleId == moduleId);
             }
         }
 
@@ -59,25 +58,26 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers
             else
             {
                 config.ConfigId = existing.ConfigId;
+                config.CreatedOnDate = existing.CreatedOnDate;
+                config.CreatedByUserId = existing.CreatedByUserId;
+
                 Update(config);
             }
         }
 
         private void Insert(ChatbotConfig config)
         {
-            using (IDataContext ctx = DataContext.Instance())
+            using (var ctx = DataContext.Instance())
             {
-                var rep = ctx.GetRepository<ChatbotConfig>();
-                rep.Insert(config);
+                ctx.GetRepository<ChatbotConfig>().Insert(config);
             }
         }
 
         private void Update(ChatbotConfig config)
         {
-            using (IDataContext ctx = DataContext.Instance())
+            using (var ctx = DataContext.Instance())
             {
-                var rep = ctx.GetRepository<ChatbotConfig>();
-                rep.Update(config);
+                ctx.GetRepository<ChatbotConfig>().Update(config);
             }
         }
     }
