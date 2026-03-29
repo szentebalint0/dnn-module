@@ -1,23 +1,70 @@
-﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<dynamic>
+﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models.ChatbotConfigViewModel>
+@using System
+@using System.Web.Helpers
 
 <script>
     window.closedAiConfig = {
-        enabled: true,
-        endpoint: "/closedai-api/question",
-        historyWindow: 6,
-        title: "A te asszisztensed",
-        inputPlaceholder: "Írd be a kérdésed...",
-        welcomeMessage: "Szia! Miben segíthetek?",
-        starterQuestions: [
-            "Mik a legkelendőbb termékek?",
-            "Ajánlj nekem egy modellt!"
-        ]
+        enabled: @Model.Enabled.ToString().ToLower(),
+        endpoint: @Html.Raw(Json.Encode(Model.Endpoint)),
+        historyWindow: @Model.HistoryWindow,
+        title: @Html.Raw(Json.Encode(Model.Title)),
+        inputPlaceholder: @Html.Raw(Json.Encode(Model.InputPlaceholder)),
+        welcomeMessage: @Html.Raw(Json.Encode(Model.WelcomeMessage)),
+        starterQuestions: @Html.Raw(Json.Encode(
+            string.IsNullOrWhiteSpace(Model.StarterQuestions)
+                ? new string[0]
+                : Model.StarterQuestions.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+        ))
     };
 </script>
 
-@if (Dnn.ModuleContext.IsEditable)
+@if (Model.IsEditable)
 {
-    <div class="closedai-config-info">
-        ClosedAI chatbot config aktív ezen az oldalon.
+    <div class="closedai-admin-panel">
+        <h3>Chatbot beállítások</h3>
+
+        <form method="post" action="@Url.Action("Save", "Item")">
+            @Html.AntiForgeryToken()
+
+            <div class="closedai-field">
+                <label>
+                    <input type="hidden" name="Enabled" value="false" />
+                    <input type="checkbox" name="Enabled" value="true" @(Model.Enabled ? "checked=\"checked\"" : "") />
+                    Engedélyezve
+                </label>
+            </div>
+
+            <div class="closedai-field">
+                <label>Endpoint</label>
+                <input type="text" name="Endpoint" value="@Model.Endpoint" />
+            </div>
+
+            <div class="closedai-field">
+                <label>History window</label>
+                <input type="number" name="HistoryWindow" value="@Model.HistoryWindow" min="1" max="20" />
+            </div>
+
+            <div class="closedai-field">
+                <label>Cím</label>
+                <input type="text" name="Title" value="@Model.Title" />
+            </div>
+
+            <div class="closedai-field">
+                <label>Placeholder</label>
+                <input type="text" name="InputPlaceholder" value="@Model.InputPlaceholder" />
+            </div>
+
+            <div class="closedai-field">
+                <label>Welcome message</label>
+                <textarea name="WelcomeMessage" rows="3">@Model.WelcomeMessage</textarea>
+            </div>
+
+            <div class="closedai-field">
+                <label>Starter kérdések (soronként egy)</label>
+                <textarea name="StarterQuestions" rows="4">@Model.StarterQuestions</textarea>
+            </div>
+
+            <button type="submit">Mentés</button>
+        </form>
     </div>
 }
