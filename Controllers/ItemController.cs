@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers;
+using DotNetNuke.Entities.Portals;
 
 namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
 {
@@ -88,6 +89,12 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
 
             var config = _configRepository.GetOrCreateDefault(moduleId, userId);
 
+            var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
+            var isAdmin = user != null && (
+                user.IsSuperUser ||
+                user.IsInRole(PortalSettings.AdministratorRoleName)
+            );
+
             var vm = new ChatbotConfigViewModel
             {
                 ModuleId = config.ModuleId,
@@ -98,7 +105,8 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
                 InputPlaceholder = config.InputPlaceholder,
                 WelcomeMessage = config.WelcomeMessage,
                 StarterQuestions = config.StarterQuestions,
-                IsEditable = ModuleContext.IsEditable
+                IsEditable = ModuleContext.IsEditable,
+                IsAdmin = isAdmin
             };
 
             return View(vm);
@@ -108,7 +116,13 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         [System.Web.Mvc.ValidateAntiForgeryToken]
         public ActionResult Save(ChatbotConfigViewModel vm)
         {
-            if (!ModuleContext.IsEditable)
+            var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
+            var isAdmin = user != null && (
+                user.IsSuperUser ||
+                user.IsInRole(PortalSettings.AdministratorRoleName)
+            );
+
+            if (!isAdmin)
             {
                 return new HttpUnauthorizedResult();
             }
