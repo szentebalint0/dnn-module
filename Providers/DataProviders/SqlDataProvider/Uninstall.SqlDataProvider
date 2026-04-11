@@ -1,3 +1,21 @@
-﻿IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}[{objectQualifier}Dnn.ClosedAI.HelloWorld_Items]') AND type in (N'U'))
-DROP TABLE {databaseOwner}[{objectQualifier}Dnn.ClosedAI.HelloWorld_Items]
+﻿IF EXISTS (
+    SELECT 1
+    FROM sys.objects
+    WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config')
+      AND type IN (N'U')
+)
+BEGIN
+    DROP TABLE {databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config
+END
+GO
+
+IF EXISTS (
+    SELECT 1
+    FROM sys.objects
+    WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Items')
+      AND type IN (N'U')
+)
+BEGIN
+    DROP TABLE {databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Items
+END
 GO

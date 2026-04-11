@@ -1,82 +1,72 @@
-﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<dynamic>
+﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models.ChatbotConfigViewModel>
+@using System
+@using System.Web.Helpers
 
-<link rel="stylesheet" href="@Url.Content("~/DesktopModules/MVC/Dnn.ClosedAI.HelloWorld/module.css")" />
+<div class="closedai-wrapper">
+    <script>
+        window.closedAiConfig = {
+            enabled: @Model.Enabled.ToString().ToLower(),
+            endpoint: @Html.Raw(Json.Encode(Model.Endpoint)),
+            historyWindow: @Model.HistoryWindow,
+            title: @Html.Raw(Json.Encode(Model.Title)),
+            inputPlaceholder: @Html.Raw(Json.Encode(Model.InputPlaceholder)),
+            welcomeMessage: @Html.Raw(Json.Encode(Model.WelcomeMessage)),
+            starterQuestions: @Html.Raw(Json.Encode(
+                string.IsNullOrWhiteSpace(Model.StarterQuestions)
+                    ? new string[0]
+                    : Model.StarterQuestions.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+            ))
+        };
+    </script>
 
-<div id="chat-@Dnn.ModuleContext.ModuleId" class="chat-root">
+    @if (Model.IsEditable)
+    {
+        <div class="closedai-admin-panel">
+            <h3>Chatbot beállítások</h3>
 
-    <div class="card">
-        <h1>Ask a Question</h1>
+            <form method="post" action="@Url.Action("Save", "Item")">
+                @Html.AntiForgeryToken()
 
-        <div class="stack">
-            <div class="row">
-                <input class="question" type="text" placeholder="Type your question..." />
-                <button class="send" type="button">Send</button>
-            </div>
+                <div class="closedai-field">
+                    <label>
+                        <input type="hidden" name="Enabled" value="false" />
+                        <input type="checkbox" name="Enabled" value="true" @(Model.Enabled ? "checked=\"checked\"" : "") />
+                        Engedélyezve
+                    </label>
+                </div>
+
+                <div class="closedai-field">
+                    <label>Endpoint</label>
+                    <input type="text" name="Endpoint" value="@Model.Endpoint" />
+                </div>
+
+                <div class="closedai-field">
+                    <label>History window</label>
+                    <input type="number" name="HistoryWindow" value="@Model.HistoryWindow" min="1" max="20" />
+                </div>
+
+                <div class="closedai-field">
+                    <label>Cím</label>
+                    <input type="text" name="Title" value="@Model.Title" />
+                </div>
+
+                <div class="closedai-field">
+                    <label>Placeholder</label>
+                    <input type="text" name="InputPlaceholder" value="@Model.InputPlaceholder" />
+                </div>
+
+                <div class="closedai-field">
+                    <label>Welcome message</label>
+                    <textarea name="WelcomeMessage" rows="3">@Model.WelcomeMessage</textarea>
+                </div>
+
+                <div class="closedai-field">
+                    <label>Starter kérdések (soronként egy)</label>
+                    <textarea name="StarterQuestions" rows="4">@Model.StarterQuestions</textarea>
+                </div>
+
+                <button type="submit" class="closedai-save-button">Mentés</button>
+            </form>
         </div>
-
-        <div class="answer">Your answer will appear here.</div>
-    </div>
-
-</div>
-
-<script>
-(function () {
-    const root = document.getElementById("chat-@Dnn.ModuleContext.ModuleId");
-
-    const questionInput = root.querySelector(".question");
-    const sendButton = root.querySelector(".send");
-    const answerBox = root.querySelector(".answer");
-
-    const HISTORY_WINDOW = 4;
-    const chatHistory = [];
-
-    async function askQuestion() {
-        const question = questionInput.value.trim();
-        if (!question) return;
-
-        sendButton.disabled = true;
-        answerBox.classList.add("loading");
-        answerBox.textContent = "Loading...";
-
-        try {
-            const response = await fetch("http://40.67.243.80/closedai-api/question", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    question,
-                    history: chatHistory.slice(-HISTORY_WINDOW),
-                    history_window: HISTORY_WINDOW
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            const data = await response.json();
-            const answer = data.answer || "(empty response)";
-
-            answerBox.textContent = answer;
-
-            chatHistory.push({ role: "user", content: question });
-            chatHistory.push({ role: "assistant", content: answer });
-
-        } catch (err) {
-            answerBox.textContent = "Error: " + err.message;
-        } finally {
-            sendButton.disabled = false;
-            answerBox.classList.remove("loading");
-        }
     }
-
-    sendButton.addEventListener("click", askQuestion);
-
-    questionInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            askQuestion();
-        }
-    });
-
-
-})();
-</script>
+</div>

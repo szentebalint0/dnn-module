@@ -1,84 +1,65 @@
-.chat-root {
-    display: flex;
-    justify-content: center;
-    padding: 24px;
+.closedai-wrapper {
+    position: relative;
+    display: block;
+    padding: 8px 0 0 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-    /* Card */
-    .chat-root .card {
-        width: min(760px, 100%);
-        background: #ffffff;
-        border: 1px solid #d5deef;
-        border-radius: 18px;
-        box-shadow: 0 20px 50px rgba(23, 32, 51, 0.12);
-        padding: 28px;
-        font-family: "Segoe UI", sans-serif;
+.closedai-admin-panel {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: 420px;
+    padding: 16px;
+    border: 1px solid #d7d7d7;
+    border-radius: 8px;
+    background: #f8f8f8;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+}
+
+    .closedai-admin-panel h3 {
+        margin: 0 0 14px 0;
+        font-size: 20px;
+        line-height: 1.2;
     }
 
-        /* Title */
-        .chat-root .card h1 {
-            margin: 0 0 14px;
-            font-size: 1.35rem;
-        }
+.closedai-field {
+    margin-bottom: 12px;
+}
 
-    /* Layout */
-    .chat-root .row {
-        display: flex;
-        gap: 10px;
-    }
-
-    /* Input */
-    .chat-root .question {
-        flex: 1;
-        font-size: 1rem;
-        padding: 14px 16px;
-        border: 1px solid #d5deef;
-        border-radius: 12px;
-        outline: none;
-    }
-
-        .chat-root .question:focus {
-            border-color: #0f62fe;
-            box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.15);
-        }
-
-    /* Button */
-    .chat-root .send {
-        border: 0;
-        border-radius: 12px;
-        padding: 0 18px;
-        font-size: 0.96rem;
+    .closedai-field label {
+        display: block;
+        margin-bottom: 4px;
         font-weight: 600;
-        color: #fff;
-        background: #0f62fe;
-        cursor: pointer;
-        transition: background 120ms ease;
     }
 
-        .chat-root .send:hover {
-            background: #0b53d7;
-        }
+    .closedai-field input[type="text"],
+    .closedai-field input[type="number"],
+    .closedai-field textarea {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+        background: #fff;
+    }
 
-        .chat-root .send:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+    .closedai-field textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
 
-    /* Answer box */
-    .chat-root .answer {
-        margin-top: 14px;
-        min-height: 64px;
-        padding: 14px 16px;
-        border-radius: 12px;
-        border: 1px dashed #d5deef;
-        color: #5c6b86;
-        background: #fbfcff;
-        white-space: pre-wrap;
-        line-height: 1.45;
-    }    
-    /* Loading state */
-        
-    .chat-root .answer.loading {
-    color: #0f62fe;
-    font-style: italic;
+.closedai-save-button {
+    padding: 8px 14px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+}
+
+    .closedai-save-button:hover {
+        background: #f0f0f0;
     }
