@@ -1,7 +1,10 @@
 using System;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models
 {
+    [TableName("Dnn_ClosedAI_HelloWorld_Config")]
+    [PrimaryKey("ConfigId", AutoIncrement = true)]
     public class ChatbotConfig
     {
         public int ConfigId { get; set; }
