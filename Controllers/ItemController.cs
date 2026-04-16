@@ -54,7 +54,6 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         }
 
         [HttpPost]
-        [DotNetNuke.Web.Mvc.Framework.ActionFilters.ValidateAntiForgeryToken]
         public ActionResult Edit(Item item)
         {
             if (item.ItemId == -1)
@@ -113,8 +112,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         }
 
         [HttpPost]
-        [System.Web.Mvc.ValidateAntiForgeryToken]
-        public ActionResult Save(ChatbotConfigViewModel vm)
+        public ActionResult Index(ChatbotConfigViewModel vm)
         {
             var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
             var isAdmin = user != null && (
@@ -127,8 +125,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
                 return new HttpUnauthorizedResult();
             }
 
-            var userId = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo().UserID;
-            var existing = _configRepository.GetOrCreateDefault(ModuleContext.ModuleId, userId);
+            var existing = _configRepository.GetOrCreateDefault(ModuleContext.ModuleId, user.UserID);
 
             existing.Enabled = vm.Enabled;
             existing.Endpoint = vm.Endpoint;
@@ -138,7 +135,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
             existing.WelcomeMessage = vm.WelcomeMessage;
             existing.StarterQuestions = vm.StarterQuestions;
             existing.LastModifiedOnDate = DateTime.UtcNow;
-            existing.LastModifiedByUserId = userId;
+            existing.LastModifiedByUserId = user.UserID;
 
             _configRepository.Save(existing);
 
