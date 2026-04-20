@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Linq;
 using DotNetNuke.Data;
 using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models;
@@ -11,9 +12,8 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers
         {
             using (var ctx = DataContext.Instance())
             {
-                return ctx.GetRepository<ChatbotConfig>()
-                          .Get()
-                          .FirstOrDefault(x => x.ModuleId == moduleId);
+                var sql = "SELECT * FROM Dnn_ClosedAI_HelloWorld_Config WHERE ModuleId = @0";
+                return ctx.ExecuteQuery<ChatbotConfig>(System.Data.CommandType.Text, sql, moduleId).FirstOrDefault();
             }
         }
 

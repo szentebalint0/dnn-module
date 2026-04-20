@@ -17,5 +17,6 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models
 
         // UI-hoz kell
         public bool IsEditable { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

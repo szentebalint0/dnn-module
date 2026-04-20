@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Providers;
+using DotNetNuke.Entities.Portals;
 
 namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
 {
@@ -53,7 +54,6 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         }
 
         [HttpPost]
-        [DotNetNuke.Web.Mvc.Framework.ActionFilters.ValidateAntiForgeryToken]
         public ActionResult Edit(Item item)
         {
             if (item.ItemId == -1)
@@ -88,6 +88,12 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
 
             var config = _configRepository.GetOrCreateDefault(moduleId, userId);
 
+            var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
+            var isAdmin = user != null && (
+                user.IsSuperUser ||
+                user.IsInRole(PortalSettings.AdministratorRoleName)
+            );
+
             var vm = new ChatbotConfigViewModel
             {
                 ModuleId = config.ModuleId,
@@ -98,23 +104,28 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
                 InputPlaceholder = config.InputPlaceholder,
                 WelcomeMessage = config.WelcomeMessage,
                 StarterQuestions = config.StarterQuestions,
-                IsEditable = ModuleContext.IsEditable
+                IsEditable = ModuleContext.IsEditable,
+                IsAdmin = isAdmin
             };
 
             return View(vm);
         }
 
         [HttpPost]
-        [System.Web.Mvc.ValidateAntiForgeryToken]
-        public ActionResult Save(ChatbotConfigViewModel vm)
+        public ActionResult Index(ChatbotConfigViewModel vm)
         {
-            if (!ModuleContext.IsEditable)
+            var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
+            var isAdmin = user != null && (
+                user.IsSuperUser ||
+                user.IsInRole(PortalSettings.AdministratorRoleName)
+            );
+
+            if (!isAdmin)
             {
                 return new HttpUnauthorizedResult();
             }
 
-            var userId = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo().UserID;
-            var existing = _configRepository.GetOrCreateDefault(ModuleContext.ModuleId, userId);
+            var existing = _configRepository.GetOrCreateDefault(ModuleContext.ModuleId, user.UserID);
 
             existing.Enabled = vm.Enabled;
             existing.Endpoint = vm.Endpoint;
@@ -124,7 +135,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
             existing.WelcomeMessage = vm.WelcomeMessage;
             existing.StarterQuestions = vm.StarterQuestions;
             existing.LastModifiedOnDate = DateTime.UtcNow;
-            existing.LastModifiedByUserId = userId;
+            existing.LastModifiedByUserId = user.UserID;
 
             _configRepository.Save(existing);
 

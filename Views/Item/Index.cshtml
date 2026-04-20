@@ -1,6 +1,7 @@
 ﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Models.ChatbotConfigViewModel>
 @using System
 @using System.Web.Helpers
+@using System.Web.Mvc
 
 <div class="closedai-wrapper">
     <script>
@@ -19,13 +20,12 @@
         };
     </script>
 
-    @if (Model.IsEditable)
+    @if (Model.IsAdmin)
     {
         <div class="closedai-admin-panel">
             <h3>Chatbot beállítások</h3>
 
-            <form method="post" action="@Url.Action("Save", "Item")">
-                @Html.AntiForgeryToken()
+            <form method="post">
 
                 <div class="closedai-field">
                     <label>
@@ -69,4 +69,3 @@
             </form>
         </div>
     }
-</div>
