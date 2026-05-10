@@ -3,7 +3,7 @@
 @using System.Web.Helpers
 @using System.Web.Mvc
 
-<div class="closedai-wrapper">
+<div id="closedaiModule-@Dnn.ModuleContext.ModuleId" class="closedai-wrapper">
     <script>
         window.closedAiConfig = {
             enabled: @Model.Enabled.ToString().ToLower(),
@@ -22,51 +22,131 @@
 
     @if (Model.IsAdmin)
     {
-        <div class="closedai-admin-panel">
-            <h3>Chatbot beállítások</h3>
+        var modalId = "closedaiSettingsModal-" + Dnn.ModuleContext.ModuleId;
+        var modalTitleId = "closedaiSettingsTitle-" + Dnn.ModuleContext.ModuleId;
 
-            <form method="post">
+        <button type="button" class="closedai-admin-trigger" data-closedai-modal-open="@modalId" aria-controls="@modalId" aria-expanded="false">
+            <svg class="closedai-admin-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
+                <path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.04-.04a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65V21a2 2 0 0 1-4 0v-.06a1.8 1.8 0 0 0-1.18-1.65 1.8 1.8 0 0 0-1.98.36l-.04.04a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.04-.04A1.8 1.8 0 0 0 4.22 15a1.8 1.8 0 0 0-1.65-1.1H2.5a2 2 0 0 1 0-4h.06a1.8 1.8 0 0 0 1.65-1.18 1.8 1.8 0 0 0-.36-1.98l-.04-.04a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.04.04a1.8 1.8 0 0 0 1.98.36h.08A1.8 1.8 0 0 0 9.9 2.6V2.5a2 2 0 0 1 4 0v.06a1.8 1.8 0 0 0 1.1 1.65 1.8 1.8 0 0 0 1.98-.36l.04-.04a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.04.04a1.8 1.8 0 0 0-.36 1.98v.08a1.8 1.8 0 0 0 1.65 1.1h.1a2 2 0 0 1 0 4h-.06A1.8 1.8 0 0 0 19.4 15Z"></path>
+            </svg>
+            <span>Chatbot</span>
+        </button>
 
-                <div class="closedai-field">
-                    <label>
-                        <input type="checkbox" name="Enabled" value="true" @(Model.Enabled ? "checked=\"checked\"" : "") />
-                        Engedélyezve
-                    </label>
-                    <input type="hidden" name="Enabled" value="false" />
+        <div id="@modalId" class="closedai-admin-modal" role="dialog" aria-modal="true" aria-labelledby="@modalTitleId" hidden>
+            <button type="button" class="closedai-admin-backdrop" data-closedai-modal-close aria-label="Bezárás"></button>
+
+            <div class="closedai-admin-panel" role="document">
+                <div class="closedai-admin-header">
+                    <h3 id="@modalTitleId">Chatbot beállítások</h3>
+                    <button type="button" class="closedai-modal-close" data-closedai-modal-close aria-label="Bezárás">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
                 </div>
 
-                <div class="closedai-field">
-                    <label>Endpoint</label>
-                    <input type="text" name="Endpoint" value="@Model.Endpoint" />
-                </div>
+                <form method="post">
 
-                <div class="closedai-field">
-                    <label>History window</label>
-                    <input type="number" name="HistoryWindow" value="@Model.HistoryWindow" min="1" max="20" />
-                </div>
+                    <div class="closedai-field">
+                        <label>
+                            <input type="checkbox" name="Enabled" value="true" @(Model.Enabled ? "checked=\"checked\"" : "") />
+                            Engedélyezve
+                        </label>
+                        <input type="hidden" name="Enabled" value="false" />
+                    </div>
 
-                <div class="closedai-field">
-                    <label>Cím</label>
-                    <input type="text" name="Title" value="@Model.Title" />
-                </div>
+                    <div class="closedai-field">
+                        <label>Endpoint</label>
+                        <input type="text" name="Endpoint" value="@Model.Endpoint" />
+                    </div>
 
-                <div class="closedai-field">
-                    <label>Placeholder</label>
-                    <input type="text" name="InputPlaceholder" value="@Model.InputPlaceholder" />
-                </div>
+                    <div class="closedai-field">
+                        <label>History window</label>
+                        <input type="number" name="HistoryWindow" value="@Model.HistoryWindow" min="1" max="20" />
+                    </div>
 
-                <div class="closedai-field">
-                    <label>Welcome message</label>
-                    <textarea name="WelcomeMessage" rows="3">@Model.WelcomeMessage</textarea>
-                </div>
+                    <div class="closedai-field">
+                        <label>Cím</label>
+                        <input type="text" name="Title" value="@Model.Title" />
+                    </div>
 
-                <div class="closedai-field">
-                    <label>Starter kérdések (soronként egy)</label>
-                    <textarea name="StarterQuestions" rows="4">@Model.StarterQuestions</textarea>
-                </div>
+                    <div class="closedai-field">
+                        <label>Placeholder</label>
+                        <input type="text" name="InputPlaceholder" value="@Model.InputPlaceholder" />
+                    </div>
 
-                <button type="submit" class="closedai-save-button">Mentés</button>
-            </form>
+                    <div class="closedai-field">
+                        <label>Welcome message</label>
+                        <textarea name="WelcomeMessage" rows="3">@Model.WelcomeMessage</textarea>
+                    </div>
+
+                    <div class="closedai-field">
+                        <label>Starter kérdések (soronként egy)</label>
+                        <textarea name="StarterQuestions" rows="4">@Model.StarterQuestions</textarea>
+                    </div>
+
+                    <button type="submit" class="closedai-save-button">Mentés</button>
+                </form>
+            </div>
         </div>
+
+        <script>
+            (function () {
+                var root = document.getElementById("closedaiModule-@Dnn.ModuleContext.ModuleId");
+                if (!root) {
+                    return;
+                }
+
+                var trigger = root.querySelector("[data-closedai-modal-open]");
+                if (!trigger) {
+                    return;
+                }
+
+                var modal = document.getElementById(trigger.getAttribute("data-closedai-modal-open"));
+                if (!modal) {
+                    return;
+                }
+
+                var closeButtons = modal.querySelectorAll("[data-closedai-modal-close]");
+                var lastFocused = null;
+
+                function focusFirstField() {
+                    var firstField = modal.querySelector("input, textarea, button, select, a[href], [tabindex]:not([tabindex='-1'])");
+                    if (firstField) {
+                        firstField.focus();
+                    }
+                }
+
+                function closeModal() {
+                    modal.hidden = true;
+                    trigger.setAttribute("aria-expanded", "false");
+                    document.removeEventListener("keydown", onKeydown);
+
+                    if (lastFocused && lastFocused.focus) {
+                        lastFocused.focus();
+                    }
+                }
+
+                function onKeydown(event) {
+                    if (event.key === "Escape" || event.keyCode === 27) {
+                        closeModal();
+                    }
+                }
+
+                trigger.addEventListener("click", function () {
+                    lastFocused = document.activeElement;
+                    modal.hidden = false;
+                    trigger.setAttribute("aria-expanded", "true");
+                    document.addEventListener("keydown", onKeydown);
+                    focusFirstField();
+                });
+
+                for (var i = 0; i < closeButtons.length; i++) {
+                    closeButtons[i].addEventListener("click", closeModal);
+                }
+            }());
+        </script>
     }
 </div>
