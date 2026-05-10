@@ -27,8 +27,9 @@
 .closedai-admin-panel {
     position: relative;
     z-index: 1;
-    width: min(100%, 560px);
-    padding: 30px;
+    width: 100%;
+    max-width: 680px;
+    padding: 26px;
     overflow: hidden;
     border: 1px solid var(--closedai-line);
     border-radius: 16px;
@@ -55,14 +56,23 @@
         letter-spacing: 0;
     }
 
-    .closedai-admin-panel form {
-        display: grid;
-        gap: 16px;
-        margin: 0;
-    }
+.closedai-admin-panel form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+    margin: 0;
+}
 
 .closedai-field {
     margin: 0;
+}
+
+.closedai-field:first-child,
+.closedai-field:nth-child(2),
+.closedai-field:nth-child(5),
+.closedai-field:nth-child(6),
+.closedai-field:nth-child(7) {
+    grid-column: 1 / -1;
 }
 
     .closedai-field label {
@@ -169,7 +179,19 @@
         border-radius: 12px;
     }
 
-        .closedai-admin-panel h3 {
-            font-size: 21px;
+    .closedai-admin-panel form {
+        grid-template-columns: 1fr;
+    }
+
+    .closedai-field:first-child,
+    .closedai-field:nth-child(2),
+    .closedai-field:nth-child(5),
+    .closedai-field:nth-child(6),
+    .closedai-field:nth-child(7) {
+        grid-column: auto;
+    }
+
+    .closedai-admin-panel h3 {
+        font-size: 21px;
         }
 }

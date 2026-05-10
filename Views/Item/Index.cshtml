@@ -29,10 +29,10 @@
 
                 <div class="closedai-field">
                     <label>
-                        <input type="hidden" name="Enabled" value="false" />
                         <input type="checkbox" name="Enabled" value="true" @(Model.Enabled ? "checked=\"checked\"" : "") />
                         Engedélyezve
                     </label>
+                    <input type="hidden" name="Enabled" value="false" />
                 </div>
 
                 <div class="closedai-field">
@@ -69,3 +69,4 @@
             </form>
         </div>
     }
+</div>

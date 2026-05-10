@@ -1,0 +1,57 @@
+-- Create config table if not exists
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.objects
+    WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config')
+      AND type IN (N'U')
+)
+BEGIN
+    CREATE TABLE {databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config
+    (
+        ConfigId int NOT NULL IDENTITY (1,1),
+        ModuleId int NOT NULL,
+
+        Enabled bit NOT NULL CONSTRAINT DF_{objectQualifier}ClosedAI_Config_Enabled DEFAULT(1),
+        Endpoint nvarchar(500) NOT NULL,
+        HistoryWindow int NOT NULL,
+
+        Title nvarchar(200) NULL,
+        InputPlaceholder nvarchar(300) NULL,
+        WelcomeMessage nvarchar(max) NULL,
+        StarterQuestions nvarchar(max) NULL,
+
+        CreatedOnDate datetime NOT NULL,
+        CreatedByUserId int NOT NULL,
+        LastModifiedOnDate datetime NOT NULL,
+        LastModifiedByUserId int NOT NULL
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+
+
+-- Primary key
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.key_constraints
+    WHERE [name] = 'PK_{objectQualifier}ClosedAI_Config'
+)
+BEGIN
+    ALTER TABLE {databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config
+    ADD CONSTRAINT PK_{objectQualifier}ClosedAI_Config
+    PRIMARY KEY CLUSTERED (ConfigId)
+END
+GO
+
+
+-- Unique constraint per ModuleId
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE [name] = 'UQ_{objectQualifier}ClosedAI_Config_ModuleId'
+)
+BEGIN
+    ALTER TABLE {databaseOwner}{objectQualifier}Dnn_ClosedAI_HelloWorld_Config
+    ADD CONSTRAINT UQ_{objectQualifier}ClosedAI_Config_ModuleId
+    UNIQUE (ModuleId)
+END
+GO
