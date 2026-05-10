@@ -1,38 +1,102 @@
 .closedai-wrapper {
+    --closedai-steel: #88A2AA;
+    --closedai-ink: #162521;
+    --closedai-iron: #3C474B;
+    --closedai-cream: #F3FFB9;
+    --closedai-lime: #FFFD98;
+    --closedai-surface: rgba(255, 255, 250, 0.94);
+    --closedai-line: rgba(136, 162, 170, 0.38);
     position: relative;
-    display: block;
-    padding: 8px 0 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 96px);
+    padding: 48px 18px;
     max-width: 100%;
     box-sizing: border-box;
+    background: linear-gradient(135deg, rgba(136, 162, 170, 0.18), rgba(243, 255, 185, 0.36) 52%, rgba(255, 253, 152, 0.22)), #fbfcf5;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
 }
+
+    .closedai-wrapper *,
+    .closedai-wrapper *::before,
+    .closedai-wrapper *::after {
+        box-sizing: border-box;
+    }
 
 .closedai-admin-panel {
     position: relative;
     z-index: 1;
-    display: block;
-    max-width: 420px;
-    padding: 16px;
-    border: 1px solid #d7d7d7;
-    border-radius: 8px;
-    background: #f8f8f8;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    box-sizing: border-box;
+    width: min(100%, 560px);
+    padding: 30px;
+    overflow: hidden;
+    border: 1px solid var(--closedai-line);
+    border-radius: 16px;
+    background: var(--closedai-surface);
+    box-shadow: 0 24px 70px rgba(22, 37, 33, 0.18);
+    color: var(--closedai-ink);
+    backdrop-filter: blur(14px);
 }
 
+    .closedai-admin-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 8px;
+        background: linear-gradient(90deg, var(--closedai-steel), var(--closedai-ink), var(--closedai-iron), var(--closedai-cream), var(--closedai-lime));
+    }
+
     .closedai-admin-panel h3 {
-        margin: 0 0 14px 0;
-        font-size: 20px;
-        line-height: 1.2;
+        margin: 0 0 24px 0;
+        color: var(--closedai-ink);
+        font-size: 24px;
+        font-weight: 750;
+        line-height: 1.15;
+        letter-spacing: 0;
+    }
+
+    .closedai-admin-panel form {
+        display: grid;
+        gap: 16px;
+        margin: 0;
     }
 
 .closedai-field {
-    margin-bottom: 12px;
+    margin: 0;
 }
 
     .closedai-field label {
         display: block;
-        margin-bottom: 4px;
-        font-weight: 600;
+        margin: 0 0 7px 0;
+        color: var(--closedai-iron);
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .closedai-field:first-child label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 38px;
+        margin: 0;
+        padding: 9px 13px;
+        border: 1px solid rgba(136, 162, 170, 0.32);
+        border-radius: 999px;
+        background: rgba(243, 255, 185, 0.46);
+        color: var(--closedai-ink);
+        cursor: pointer;
+    }
+
+    .closedai-field:first-child input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        accent-color: var(--closedai-ink);
+    }
+
+    .closedai-field:first-child input[type="hidden"] {
+        display: none;
     }
 
     .closedai-field input[type="text"],
@@ -40,26 +104,72 @@
     .closedai-field textarea {
         width: 100%;
         max-width: 100%;
-        box-sizing: border-box;
-        padding: 8px 10px;
-        border: 1px solid #bdbdbd;
-        border-radius: 4px;
-        background: #fff;
+        min-height: 44px;
+        padding: 11px 13px;
+        border: 1px solid rgba(60, 71, 75, 0.24);
+        border-radius: 10px;
+        outline: none;
+        background: rgba(255, 255, 255, 0.88);
+        color: var(--closedai-ink);
+        font: inherit;
+        line-height: 1.4;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
     }
+
+        .closedai-field input[type="text"]:focus,
+        .closedai-field input[type="number"]:focus,
+        .closedai-field textarea:focus {
+            border-color: var(--closedai-steel);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(243, 255, 185, 0.86);
+        }
 
     .closedai-field textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 92px;
     }
 
 .closedai-save-button {
-    padding: 8px 14px;
-    border: 1px solid #999;
-    border-radius: 4px;
-    background: #fff;
+    justify-self: start;
+    min-height: 44px;
+    margin-top: 2px;
+    padding: 0 22px;
+    border: 1px solid rgba(22, 37, 33, 0.14);
+    border-radius: 999px;
+    background: var(--closedai-lime);
+    color: var(--closedai-ink);
     cursor: pointer;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 12px 26px rgba(22, 37, 33, 0.14);
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
 
-    .closedai-save-button:hover {
-        background: #f0f0f0;
+    .closedai-save-button:hover,
+    .closedai-save-button:focus {
+        background: var(--closedai-cream);
+        box-shadow: 0 16px 30px rgba(22, 37, 33, 0.2);
+        transform: translateY(-1px);
     }
+
+    .closedai-save-button:focus {
+        outline: 3px solid rgba(136, 162, 170, 0.5);
+        outline-offset: 3px;
+    }
+
+@media (max-width: 640px) {
+    .closedai-wrapper {
+        align-items: flex-start;
+        min-height: auto;
+        padding: 24px 12px;
+    }
+
+    .closedai-admin-panel {
+        padding: 24px 18px 20px;
+        border-radius: 12px;
+    }
+
+        .closedai-admin-panel h3 {
+            font-size: 21px;
+        }
+}
