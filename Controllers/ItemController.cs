@@ -89,10 +89,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
             var config = _configRepository.GetOrCreateDefault(moduleId, userId);
 
             var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
-            var isAdmin = user != null && (
-                user.IsSuperUser ||
-                user.IsInRole(PortalSettings.AdministratorRoleName)
-            );
+            var isAdmin = user != null && user.IsSuperUser;
 
             var vm = new ChatbotConfigViewModel
             {
@@ -115,10 +112,7 @@ namespace HelloWorld.Dnn.Dnn.ClosedAI.HelloWorld.Controllers
         public ActionResult Index(ChatbotConfigViewModel vm)
         {
             var user = DotNetNuke.Entities.Users.UserController.Instance.GetCurrentUserInfo();
-            var isAdmin = user != null && (
-                user.IsSuperUser ||
-                user.IsInRole(PortalSettings.AdministratorRoleName)
-            );
+            var isAdmin = user != null && user.IsSuperUser;
 
             if (!isAdmin)
             {
